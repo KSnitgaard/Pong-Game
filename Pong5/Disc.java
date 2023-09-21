@@ -13,18 +13,28 @@ public class Disc extends Actor
     public Disc()
     {
         timeAlive = 0;
+        setImage();
     }
+    
     /**
-     * Act - do whatever the Disc wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
+     * Manages the disc's lifespan in the world.
      */
     public void act()
     {
-        //discen er der i cirka 5 sekunder 
         timeAlive++;
         if(timeAlive >= 300)
         {
             getWorld().removeObject(this);
         }
+    }
+    
+    /**
+     * Sets the image of the disc.
+     */
+    public void setImage()
+    {
+        GreenfootImage image = new GreenfootImage("disc.png");
+        image.scale(image.getWidth() * 2, image.getHeight() * 2); // Scale the image to be double size
+        setImage(image);
     }
 }

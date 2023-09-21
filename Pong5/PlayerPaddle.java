@@ -32,11 +32,11 @@ public class PlayerPaddle extends Actor
     }
     
     /**
-     * Place the paddle at the x-location of the hand of the user.
+     * Listens for left and right key presses to move the player paddle.
      */
     public void act() 
     {
-        if (Greenfoot.isKeyDown("left")) {
+         if (Greenfoot.isKeyDown("left")) {
             moveLeft();
         }
         if (Greenfoot.isKeyDown("right")) {

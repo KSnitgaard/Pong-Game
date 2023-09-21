@@ -12,5 +12,5 @@ comment3.target=void\ moveRight()
 comment3.text=\r\n\ Move\ to\ the\ right.\r\n
 comment4.params=
 comment4.target=void\ act()
-comment4.text=\r\n\ Place\ the\ paddle\ at\ the\ x-location\ of\ the\ hand\ of\ the\ user.\r\n
+comment4.text=\r\n\ Listens\ for\ left\ and\ right\ key\ presses\ to\ move\ the\ player\ paddle.\r\n
 numComments=5

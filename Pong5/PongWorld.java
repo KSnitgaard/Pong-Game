@@ -9,11 +9,13 @@ import java.util.Set;
  */
 public class PongWorld extends World
 {    
+    private int discTimer = 0;
+    private int discInterval = 900;
+    
     private GameLevel gameLevelText;
+    
     GifImage background = new GifImage("tester.gif");
     public GreenfootSound sound = new GreenfootSound("introsang.wav");
-    private int discTimer = 0;
-    private int discInterval = 1000;
     /**
      * Constructor for objects of class MyWorld.
      * 
@@ -24,15 +26,17 @@ public class PongWorld extends World
         
         //Add players and ball.
         addObject(new PlayerPaddle(),300,580);
-        addObject(new AIPaddle(),Greenfoot.getRandomNumber(601 ),Greenfoot.getRandomNumber(400));
+        addObject(new AIPaddle(),Greenfoot.getRandomNumber(601 ),Greenfoot.getRandomNumber(280));
         addObject(new Ball(),300, 300);
-        
+                
         // Add the game level text to the upper right corner
         gameLevelText = new GameLevel();
         addObject(gameLevelText, getWidth() - 100, 30);
-        
     }
     
+    /**
+     * Sets the background, manages disc spawning, and updates the game level.
+     */
     public void act()
     {
         sound.stop();
@@ -46,12 +50,19 @@ public class PongWorld extends World
         }
     }
     
-    private void spawnDisc()
+    /**
+     * Spawns a disc in the world.
+     */
+    public void spawnDisc()
     {
         Disc disc = new Disc();
-        addObject(disc, Greenfoot.getRandomNumber(600), Greenfoot.getRandomNumber(600));
+        addObject(disc, Greenfoot.getRandomNumber(600), Greenfoot.getRandomNumber(400));
+        disc.setImage();
     }
     
+    /**
+     * Updates the game level text.
+     */
     public void updateGameLevel() {
         gameLevelText.increaseGameLevel();
     }

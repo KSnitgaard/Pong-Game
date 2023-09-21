@@ -8,13 +8,16 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Ball extends Actor
 {
-    public int xSpeed;         // x movement speed
-    public int ySpeed;         // y movement speed
+    private static int ballCount = 0;
+    
+    public int deltaX;         // x movement speed
+    public int deltaY;         // y movement speed
     public int radius;
     private int delay;
     private int hitCount;
     private int gameLevel;
     private int prevY;
+    private boolean hasBounced;
     
     private GreenfootImage gameLevelImage, imageBlue, imagePink, imageGreen, imageOrange;
     
@@ -23,11 +26,12 @@ public class Ball extends Actor
      */
     public Ball()
     {
-        xSpeed = 4;
-        ySpeed = 4;
+        deltaX = 4;
+        deltaY = 4;
         radius = getImage().getWidth() / 2;
-        delay = 120;
+        delay = 60;
         gameLevel = 1;
+        
         
         //Create a new image for the game level text
         gameLevelImage = new GreenfootImage("Game Level: " + gameLevel, 24, Color.WHITE, new Color(0, 0, 0, 0));
@@ -39,110 +43,137 @@ public class Ball extends Actor
         
     }
     
+    /**
+     * Handles ball movement, collision with walls, paddles, and power-up. Also manages game level and speed.
+     */
     public void act() 
     {
         if (delay > 0) {
             delay--;
             return;
         }
-        move();
         checkWalls();
         checkPlayerPaddle();
         checkAIPaddle();
-        checkOut();
-        
-        // Update the previous Y position
+        setLocation(getX() + deltaX, getY() + deltaY);
         prevY = getY();
         eatDisc();
-    }
-    
-    public void move(){
-        setLocation(getX() + xSpeed, getY() + ySpeed);
+        hasBounced = false;
+        checkOut();
     }
     
     /**
-     * Check whether we've hit one of the walls or the ceiling. Reverse direction if necessary.
+     * Checks and handles collisions with walls and ceiling
      */
     private void checkWalls()
     {
         if (getX() <= radius || getX() >= getWorld().getWidth()-radius) {
-            xSpeed = -xSpeed;
+            deltaX = -deltaX;
             changeImage();
             Greenfoot.playSound("wallhit.wav");
         }
         
         if (getY() <= radius) {
-            ySpeed = -ySpeed;
+            deltaY = -deltaY;
             changeImage();
             Greenfoot.playSound("wallhit.wav");
         }
     }
     
     /**
-     * Reverse vertical direction if we hit a paddle.
+     * Checks and handles collisions with the player paddle.
      */
     private void checkPlayerPaddle()
     {
         PlayerPaddle playerPaddle = (PlayerPaddle)getOneIntersectingObject(PlayerPaddle.class);
-        if (playerPaddle != null)
-        {
+        if (playerPaddle != null){
+            deltaY = -deltaY;
+            //deltaX = Math.round((getX()-playerPaddle.getX())/9.0f);
             handlePaddleHit();
             changeImage();
+            hasBounced = true;
+            // Adjust the position to prevent getting stuck
+            int newY = playerPaddle.getY() - playerPaddle.getImage().getHeight() / 2 - radius;
+            setLocation(getX(), newY);
         }
     }
     
     /**
-    * Reverse vertical direction if we hit a paddle.
+    * Checks and handles collisions with the AI paddle.
     */
     private void checkAIPaddle() {
         AIPaddle aiPaddle = (AIPaddle)getOneIntersectingObject(AIPaddle.class);
         if (aiPaddle != null) {
             // Check if the ball is moving in a direction that requires bouncing
-            if (ySpeed < 0 && prevY > aiPaddle.getY()) {
+            if (deltaY < 0 && prevY > aiPaddle.getY()) {
+                deltaY = -deltaY;
                 handlePaddleHit();
                 changeImage();  
+                hasBounced = true;
+                // Adjust the position to prevent getting stuck
+                int newY = aiPaddle.getY() + aiPaddle.getImage().getHeight() / 2 + radius;
+                setLocation(getX(), newY);
             }
         }
     }
     
     /**
-      * Check whether the ball is out of play (Bottom of screen).
+      * Checks if the ball is out of play (bottom of the screen).
      */
     private void checkOut()
     {
         if (getY() > getWorld().getHeight() - 10) {
-            // reset ball
-            setLocation (getWorld().getWidth()/2, getWorld().getHeight()/2);
-            delay = 200;
-            xSpeed = 1;
-            Greenfoot.setWorld(new Deathscreen());
+            // Check if this is the last ball
+            if (ballCount <= 0) {
+                Greenfoot.setWorld(new Deathscreen());
+            }
+            getWorld().removeObject(this);
+            ballCount--;
         }
     }
     
     /**
-     * Handle a paddle hit and check if the hit count reaches 10.
+     * Handles paddle hit events.
      */
     private void handlePaddleHit() {
-        ySpeed = -ySpeed;
         hitCount++;
         Greenfoot.playSound("PaddleHit.wav");
         if (hitCount % 10 == 0) {  // Increase speed and game level every 10 hits
             increaseGameLevel();
+            increaseSpeed();
             changeImage();
         }
     }
     
     /**
-     * Increase the ball speed and game level.
+     * Increases the game level and notifies PongWorld to update the game level display.
      */
     private void increaseGameLevel() {
         gameLevel++;
-        xSpeed++;
-        ySpeed++;
         // Notify PongWorld to update the game level display
         ((PongWorld) getWorld()).updateGameLevel();
     }
     
+    /**
+     * Increases the ball's speed.
+     */
+    private void increaseSpeed()
+    {
+        if (deltaY < 0){
+            deltaY -= 1;
+        } else{
+            deltaY += 1;
+        }
+        if (deltaX < 0){
+            deltaX -= 1;
+        } else{
+            deltaX += 1;
+        }
+    }
+    
+    /**
+     * Changes the ball's image.
+     */
     public void changeImage()
     {
         if (getImage() == imageBlue)
@@ -155,9 +186,8 @@ public class Ball extends Actor
             setImage(imageBlue);
     }
     
-      /**
-     * "bolden" spier discen og tilføjer en ny "bold"
-     * Lige nu slutter spillet når første "bold" rammer bunden
+    /**
+     * 
      */
     public void eatDisc()
     {
@@ -168,6 +198,7 @@ public class Ball extends Actor
             getWorld().removeObject(D);
             Greenfoot.playSound("powerup.mp3");
             getWorld().addObject(ball, 300, 300);
+            ballCount++;
         }
     }
 }

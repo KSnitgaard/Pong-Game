@@ -6,4 +6,5 @@ comment1.target=Deathscreen()
 comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ deathscreentest.\r\n\ \r\n
 comment2.params=
 comment2.target=void\ act()
+comment2.text=\r\n\ Plays\ a\ sound\ and\ checks\ for\ the\ space\ key\ press\ to\ reset\ the\ game\ by\ setting\ the\ world\ to\ the\ StartScreen.\r\n
 numComments=3

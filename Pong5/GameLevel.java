@@ -20,18 +20,28 @@ public class GameLevel extends Actor {
             hasAddedAIPaddle = true;
         }
     }
+    
+    /**
+     * Constructor to initialize the game level and update the image.
+     */
     public GameLevel() {
         gameLevel = 1;
         updateImage();
     }
     
+    /**
+     *  Increases the game level.
+     */
     public void increaseGameLevel() {
         gameLevel++;
         updateImage();
     }
     
+    /**
+     * Updates the image displaying the game level.
+     */
     private void updateImage() {
-        GreenfootImage image = new GreenfootImage("Game Level: " + gameLevel, 24, Color.WHITE, new Color(0, 0, 0, 0));
+        GreenfootImage image = new GreenfootImage("Game Level: " + gameLevel, 24, Color.CYAN, new Color(0, 0, 0, 0));
         setImage(image);
     }
 }

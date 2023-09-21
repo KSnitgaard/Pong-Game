@@ -20,10 +20,14 @@ public class StartScreen extends World
         // Create a new world with 600x600 cells with a cell size of 1x1 pixels.
         super(600, 600, 1);
         
-        addObject( new logo(), 300, 200);
-        addObject( new start( ), 300, 500);
+        addObject( new Logo(), 300, 200);
+        addObject( new Start( ), 300, 450);
     }
     
+    
+    /**
+     * Plays a sound and sets the background, triggers the start method when the space key is pressed.
+     */
     public void act()
     {
         sound.play();
@@ -31,6 +35,9 @@ public class StartScreen extends World
         start();
     }
     
+    /**
+     * Transitions to the PongWorld when the space key is pressed.
+     */
     public void start()
     {
         if (Greenfoot.isKeyDown("space")) 
