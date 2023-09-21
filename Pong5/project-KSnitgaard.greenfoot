@@ -1,7 +1,7 @@
 #Greenfoot project file
 class.AIPaddle.image=dvd-paddles.png
 class.Ball.image=pongBoldBl\u00E5.png
-class.Deathscreen.image=Static.png
+class.Deathscreen.image=Gameovergif.gif
 class.Disc.image=disc.png
 class.Logo.image=logo.png
 class.PlayerPaddle.image=dvd-paddles.png
